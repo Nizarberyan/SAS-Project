@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
-
+#include <ctype.h>
 #define USERNAME_SIZE 25
 #define PASSWORD_SIZE 25
 #define REASON_SIZE 255
@@ -10,11 +10,14 @@
 #define CATEGORY_SIZE 255
 #define STATUS_SIZE 25
 #define TIME_SIZE 100
+#define MAX_TICKETS 100
+#define MAX_USERS 100
 
 typedef struct
 {
     char *username;
     char *password;
+    char *role;
 } users;
 
 typedef struct
@@ -30,15 +33,130 @@ typedef struct
 users SignUp(users user_array[])
 {
     users new_user;
+    int valid_password = 0;
     printf("please enter your username: ");
     new_user.username = (char *)malloc(USERNAME_SIZE * sizeof(char));
     fgets(new_user.username, USERNAME_SIZE, stdin);
     new_user.username[strcspn(new_user.username, "\n")] = '\0';
 
-    printf("please enter your password: ");
-    new_user.password = (char *)malloc(PASSWORD_SIZE * sizeof(char));
-    fgets(new_user.password, PASSWORD_SIZE, stdin);
-    new_user.password[strcspn(new_user.password, "\n")] = '\0';
+    for (int i = 0; i < MAX_USERS; i++)
+    {
+        if (strcmp(user_array[i].username, new_user.username) == 0)
+        {
+            printf("Username already exists. Please try again.\n");
+            free(new_user.username);
+            return SignUp(user_array);
+        }
+    }
+
+    if (user_array[0].username == NULL)
+    {
+        new_user.role = strdup("admin");
+    }
+    else
+    {
+        new_user.role = strdup("user");
+    }
+
+    do
+    {
+        printf("please enter your password: ");
+        new_user.password = (char *)malloc(PASSWORD_SIZE * sizeof(char));
+        fgets(new_user.password, PASSWORD_SIZE, stdin);
+        new_user.password[strcspn(new_user.password, "\n")] = '\0';
+
+        int has_uppercase = 0;
+        int has_lowercase = 0;
+        int has_digit = 0;
+        int has_space = 0;
+        int has_special = 0;
+        int same_password_as_username = 0;
+        for (int i = 0; i < strlen(new_user.password); i++)
+        {
+            if (isupper(new_user.password[i]))
+            {
+                has_uppercase = 1;
+            }
+            else if (islower(new_user.password[i]))
+            {
+                has_lowercase = 1;
+            }
+            else if (isdigit(new_user.password[i]))
+            {
+                has_digit = 1;
+            }
+            else if (isspace(new_user.password[i]))
+            {
+                has_space = 1;
+            }
+            else if (ispunct(new_user.password[i]))
+            {
+                has_special = 1;
+            }
+            else if (strcmp(new_user.password, new_user.username) == 0)
+            {
+                same_password_as_username = 1;
+            }
+        }
+        valid_password = 1;
+
+        if (!has_lowercase)
+        {
+            printf("Password must contain at least one lowercase letter.\n");
+            valid_password = 0;
+        }
+
+        if (!has_uppercase)
+        {
+            printf("Password must contain at least one uppercase letter.\n");
+            valid_password = 0;
+        }
+        if (!has_digit)
+        {
+            printf("Password must contain at least one digit.\n");
+            valid_password = 0;
+        }
+
+        if (has_space)
+        {
+            printf("Password must not contain spaces.\n");
+            valid_password = 0;
+        }
+
+        if (!has_special)
+        {
+            printf("Password must contain at least one special character.\n");
+            valid_password = 0;
+        }
+
+        if (valid_password == 0)
+        {
+            free(new_user.password);
+        }
+        if (same_password_as_username)
+        {
+            printf("Password cannot be same as username.\n");
+            valid_password = 0;
+        }
+    } while (!valid_password);
+
+    if (user_array[0].username == NULL)
+    {
+        user_array[0] = new_user;
+    }
+    else
+    {
+        for (int i = 0; i < MAX_USERS; i++)
+        {
+            if (user_array[i].username == NULL || user_array[i].username[0] == '\0')
+            {
+                user_array[i] = new_user;
+                break;
+            }
+        }
+    }
+
+    printf("Sign up successful\n");
 
     return new_user;
 }
