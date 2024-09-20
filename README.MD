@@ -55,7 +55,7 @@ Before compiling and running the project, make sure you have the following insta
 1. Clone the repository:
 
    ```bash
-   git clone https://github.com/your-username/SAS.git
+   git clone https://github.com/Nizarberyan/SAS.git
    cd SAS
    ```
 
