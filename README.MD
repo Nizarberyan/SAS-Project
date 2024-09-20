@@ -61,7 +61,7 @@ Before compiling and running the project, make sure you have the following insta
 
 2. Compile the program:
    ```bash
-   gcc main.c "SAs Project main" -o SAS
+   gcc main.c "SAS Project main" -o SAS
    ```
 
 ---
