@@ -30,7 +30,7 @@ typedef struct
     char *time;
 } tickets;
 
-void SignUp(users user_array[])
+void SignUp(users user_array[], int count)
 {
     users new_user;
     int valid_password = 0;
@@ -265,5 +265,158 @@ void FreeTickets(tickets ticket_array[], int ticket_count)
         free(ticket_array[i].category);
         free(ticket_array[i].status);
         free(ticket_array[i].time);
+    }
+}
+
+void admin_menu(users user_array[], tickets ticket_array[], int count, int ticket_count)
+{
+
+    int admin_choice = 0;
+    int ticket_id = 0;
+    do
+    {
+        printf("\nview tickets (1)\n");
+        printf("see list of agents (2)\n");
+        printf("exit (3)\n");
+        printf("enter your choice: ");
+        scanf("%d", &admin_choice);
+        getchar();
+        switch (admin_choice)
+        {
+        case 1:
+            DisplayTickets(ticket_array, ticket_count);
+            printf("would you like to edit a ticket? (1)\n");
+            printf("sort tickets (2)\n");
+            printf("exit (3)\n");
+            printf("enter your choice: ");
+            scanf("%d", &admin_choice);
+            getchar();
+            switch (admin_choice)
+            {
+            case 1:
+            {
+                printf("enter the id of the ticket you want to edit: ");
+                scanf("%d", &ticket_id);
+                getchar();
+            }
+            }
+        case 2:
+            for (int i = 1; i < count; i++)
+            {
+                if (strcmp(user_array[i].role, "agent") == 1)
+                {
+                    printf("there no agents\n");
+                    printf("would you like to an agent? (1)\n");
+                    printf("exit (2)\n");
+                    printf("enter your choice: ");
+                    scanf("%d", &admin_choice);
+                    getchar();
+
+                    switch (admin_choice)
+                    {
+                    case 1:
+                    }
+                }
+            }
+            break;
+        case 3:
+            break;
+        default:
+            printf("Invalid choice\n");
+            break;
+        }
+    } while (admin_choice != 3);
+}
+void make_agent(users user_array[], tickets ticket_array[], int count, int ticket_count)
+{
+    int admin_agent_choice = 0;
+    for (int i = 1; i < MAX_USERS; i++)
+    {
+        if (user_array[i].username == NULL)
+        {
+            printf("there are no users\n");
+            printf("would you like to add a user and make it an agent? (1)\n");
+            printf("exit (2)\n");
+            printf("enter your choice: ");
+            scanf("%d", &admin_agent_choice);
+            getchar();
+
+            switch (admin_agent_choice)
+            {
+            case 1:
+                SignUp(user_array, count);
+                break;
+            case 2:
+                break;
+            default:
+                printf("Invalid choice\n");
+            }
+        }
+        else if (strcmp(user_array[i].role, "user") == 0)
+        {
+            printf("username: %s\n", user_array[i].username);
+            printf("password: %s\n", user_array[i].password);
+            printf("role: %s\n", user_array[i].role);
+            printf("\n");
+            printf("would you like to make this user an agent? (1)\n");
+            printf("exit (2)\n");
+            printf("enter your choice: ");
+            scanf("%d", &admin_agent_choice);
+            getchar();
+
+            switch (admin_agent_choice)
+            {
+            case 1:
+                user_array[i].role = strdup("agent");
+                break;
+            case 2:
+                break;
+            default:
+                printf("Invalid choice\n");
+                break;
+            }
+        }
+    }
+}
+void edit_ticket(tickets ticket_array[], int ticket_count, int ticket_id)
+{
+    int status_choice = 0;
+    for (int i = 1; i < ticket_count; i++)
+    {
+        printf("id: %d\n", *ticket_array[i].id);
+        printf("reason: %s\n", ticket_array[i].reason);
+        printf("description: %s\n", ticket_array[i].description);
+        printf("category: %s\n", ticket_array[i].category);
+        printf("status: %s\n", ticket_array[i].status);
+        printf("time: %s\n", ticket_array[i].time);
+        printf("\n\n");
+    }
+    for (int i = 1; i < ticket_count; i++)
+    {
+        if (*ticket_array[i].id == ticket_id)
+        {
+            printf("enter the new status: \n 1. open \n 2. closed \n 3. in progress \n");
+            scanf("%d", &status_choice);
+            getchar();
+            switch (status_choice)
+            {
+            case 1:
+                ticket_array[i].status = strdup("open");
+                break;
+            case 2:
+                ticket_array[i].status = strdup("closed");
+                break;
+            case 3:
+                ticket_array[i].status = strdup("in progress");
+                break;
+            default:
+                printf("Invalid choice\n");
+                break;
+            }
+
+            printf("enter the new description: ");
+            scanf("%s", ticket_array[i].description);
+            break;
+        }
     }
 }
