@@ -39,16 +39,6 @@ users SignUp(users user_array[])
     fgets(new_user.username, USERNAME_SIZE, stdin);
     new_user.username[strcspn(new_user.username, "\n")] = '\0';
 
-    for (int i = 0; i < MAX_USERS; i++)
-    {
-        if (strcmp(user_array[i].username, new_user.username) == 0)
-        {
-            printf("Username already exists. Please try again.\n");
-            free(new_user.username);
-            return SignUp(user_array);
-        }
-    }
-
     if (user_array[0].username == NULL)
     {
         new_user.role = strdup("admin");
@@ -70,7 +60,6 @@ users SignUp(users user_array[])
         int has_digit = 0;
         int has_space = 0;
         int has_special = 0;
-        int same_password_as_username = 0;
         for (int i = 0; i < strlen(new_user.password); i++)
         {
             if (isupper(new_user.password[i]))
@@ -92,10 +81,6 @@ users SignUp(users user_array[])
             else if (ispunct(new_user.password[i]))
             {
                 has_special = 1;
-            }
-            else if (strcmp(new_user.password, new_user.username) == 0)
-            {
-                same_password_as_username = 1;
             }
         }
         valid_password = 1;
@@ -132,11 +117,6 @@ users SignUp(users user_array[])
         if (valid_password == 0)
         {
             free(new_user.password);
-        }
-        if (same_password_as_username)
-        {
-            printf("Password cannot be same as username.\n");
-            valid_password = 0;
         }
     } while (!valid_password);
 

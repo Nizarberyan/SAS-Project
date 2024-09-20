@@ -15,8 +15,12 @@ int main()
     int login_status = 0;
     user_array[0].username = (char *)malloc(25 * sizeof(char));
     user_array[0].password = (char *)malloc(25 * sizeof(char));
-    strcpy(user_array[0].username, "admin");
-    strcpy(user_array[0].password, "Admin@123");
+
+    for (int i = 0; i < 100; i++)
+    {
+        user_array[i].username = NULL;
+        user_array[i].password = NULL;
+    }
 
     do
     {
@@ -30,7 +34,6 @@ int main()
         {
         case 1:
             user_array[count] = SignUp(user_array);
-            printf("Sign up successful\n");
             count++;
             break;
 
