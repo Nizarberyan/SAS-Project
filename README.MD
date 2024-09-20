@@ -1,4 +1,7 @@
-````markdown
+Here’s the completed README:
+
+---
+
 # **Simple Authentication System (SAS)**
 
 Welcome to the **Simple Authentication System (SAS)** project! This C-based project provides a basic user authentication system, allowing for **user registration, login**, and **ticket management** with an admin panel for managing tickets.
@@ -34,83 +37,76 @@ The project includes the following core components:
 
 ## **Features**
 
-- **Sign-Up and Login**: Users can register with a username and password. Passwords must meet certain security criteria (including length and character types).
-- **Password Validation**: Passwords must be at least 8 characters long and include uppercase, lowercase, digits, and special characters.
-- **Admin Panel**: An admin account is hardcoded into the system for managing users and tickets.
-- **Ticket Management**: Users can submit tickets, and admins can view and manage submitted tickets.
+- **Sign-Up and Login**: Users can register with a username and password. Passwords must meet certain security criteria (including length, character types, etc.).
+- **Password Validation**: Passwords are validated to include at least 8 characters, one uppercase, one lowercase, one digit, and one special character.
+- **Admin Panel**: The hardcoded admin (`admin`, `Admin@123`) has special privileges to view and manage all tickets.
+- **Ticket Creation**: Regular users can create tickets.
+- **Ticket Viewing (Admin)**: Admin can view all user-submitted tickets.
 
 ---
 
 ## **Getting Started**
 
-### Prerequisites
+### **Prerequisites**
 
-- A C compiler like GCC
-- Basic knowledge of C and file handling
+Before compiling and running the project, make sure you have the following installed:
 
-### Installation
+- **GCC Compiler** (or any compatible C compiler)
+- Basic knowledge of C
+
+### **Installation**
 
 1. Clone the repository:
-   ```bash
-   git clone https://github.com/yourusername/Simple-Authentication-System.git
-   ```
-````
 
-2. Navigate to the project directory:
    ```bash
-   cd Simple-Authentication-System
+   git clone https://github.com/your-username/SAS.git
+   cd SAS
    ```
-3. Compile the code:
+
+2. Compile the program:
    ```bash
-   gcc main.c SAS-Functions.c -o sas
+   gcc main.c SAS-Functions.c -o SAS
    ```
 
 ---
 
 ## **Usage**
 
-1. **Run the executable**:
+1. After compiling, run the program:
 
    ```bash
-   ./sas
+   ./SAS
    ```
 
-2. **Choose from the available options**:
+2. You will be presented with three options:
 
-   - **1. Sign Up**: Register a new user.
-   - **2. Login**: Login as an existing user or admin.
-   - **3. Exit**: Quit the application.
+   - **Sign Up**: Create a new user.
+   - **Login**: Login using a registered user account.
+   - **Exit**: Exit the program.
 
-3. **Admin Credentials**:
+3. Admin users can log in with the default credentials to view all submitted tickets.
 
-   - Username: `admin`
-   - Password: `Admin@123`
-
-4. **Admin Privileges**:
-   Once logged in as admin, you can:
-   - **Display Tickets**: View all submitted tickets.
-   - **Exit**: Return to the main menu.
+4. Regular users can log in, add tickets, and view their own tickets.
 
 ---
 
 ## **Code Structure**
 
-- **main.c**: Contains the main logic for handling user interactions and control flow.
-- **SAS-Functions.c**: Contains the core functionality like `SignUp`, `Login`, and `AddTicket`.
-- **SAS-Functions.h**: The header file defining function prototypes and global variables.
+- **`main.c`**: Contains the main logic for user interaction and program flow.
+- **`SAS-Functions.h`**: Header file declaring the necessary functions.
+- **`SAS-Functions.c`**: Core implementation of functions such as sign-up, login, ticket handling, and user/ticket management.
+- **Data Structures**:
+  - `users`: Holds information like username, password, and role.
+  - `tickets`: Represents the user tickets.
 
 ---
 
 ## **Contributing**
 
-Contributions are welcome! Please submit a pull request or open an issue to suggest improvements or report bugs.
+Contributions are welcome! If you have suggestions or find any bugs, feel free to open an issue or submit a pull request. Please ensure that your code adheres to the project's coding standards.
 
 ---
 
 ## **License**
 
-This project is licensed under the MIT License.
-
-```
-
-```
+This project is licensed under the MIT License. Feel free to use, modify, and distribute it as you see fit.
