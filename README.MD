@@ -1,7 +1,3 @@
-Here’s the completed README:
-
----
-
 # **Simple Authentication System (SAS)**
 
 Welcome to the **Simple Authentication System (SAS)** project! This C-based project provides a basic user authentication system, allowing for **user registration, login**, and **ticket management** with an admin panel for managing tickets.
