@@ -6,17 +6,19 @@ int main()
     int initial_choice = 0;
     int user_choice = 0;
     int admin_choice = 0;
-    users user_array[100];
+    users user_array[100] = {0};
     tickets ticket_array[100];
     int count = 1;
     int ticket_count = 0;
     char username[25];
     char password[25];
     int login_status = 0;
-    user_array[0].username = (char *)malloc(25 * sizeof(char));
-    user_array[0].password = (char *)malloc(25 * sizeof(char));
 
-    for (int i = 0; i < 100; i++)
+    user_array[0].username = strdup("admin");
+    user_array[0].password = strdup("Admin@123");
+    user_array[0].role = strdup("admin");
+
+    for (int i = 1; i < 100; i++)
     {
         user_array[i].username = NULL;
         user_array[i].password = NULL;

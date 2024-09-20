@@ -39,15 +39,6 @@ users SignUp(users user_array[])
     fgets(new_user.username, USERNAME_SIZE, stdin);
     new_user.username[strcspn(new_user.username, "\n")] = '\0';
 
-    if (user_array[0].username == NULL)
-    {
-        new_user.role = strdup("admin");
-    }
-    else
-    {
-        new_user.role = strdup("user");
-    }
-
     do
     {
         printf("please enter your password: ");
@@ -114,6 +105,12 @@ users SignUp(users user_array[])
             valid_password = 0;
         }
 
+        if (strlen(new_user.password) < 8)
+        {
+            printf("Password must be at least 8 characters long.\n");
+            valid_password = 0;
+        }
+
         if (valid_password == 0)
         {
             free(new_user.password);
@@ -126,7 +123,7 @@ users SignUp(users user_array[])
     }
     else
     {
-        for (int i = 0; i < MAX_USERS; i++)
+        for (int i = 1; i < MAX_USERS; i++)
         {
             if (user_array[i].username == NULL || user_array[i].username[0] == '\0')
             {
