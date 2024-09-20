@@ -30,7 +30,7 @@ typedef struct
     char *time;
 } tickets;
 
-users SignUp(users user_array[])
+void SignUp(users user_array[])
 {
     users new_user;
     int valid_password = 0;
@@ -117,9 +117,9 @@ users SignUp(users user_array[])
         }
     } while (!valid_password);
 
-    if (user_array[0].username == NULL)
+    if (user_array[1].username == NULL)
     {
-        user_array[0] = new_user;
+        user_array[1] = new_user;
     }
     else
     {
@@ -135,7 +135,8 @@ users SignUp(users user_array[])
 
     printf("Sign up successful\n");
 
-    return new_user;
+    free(new_user.username);
+    free(new_user.password);
 }
 
 int Login(users user_array[], char *username, char *password, int count)

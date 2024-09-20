@@ -35,7 +35,7 @@ int main()
         switch (initial_choice)
         {
         case 1:
-            user_array[count] = SignUp(user_array);
+            SignUp(user_array);
             count++;
             break;
 
