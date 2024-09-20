@@ -1,8 +1,5 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <time.h>
-#include <./SAS-Functions.h>
+
+#include "SAS-Functions.h"
 
 int main()
 {
@@ -114,22 +111,9 @@ int main()
                 break;
             }
         }
-    } while (initial_choice != 3)
+    } while (initial_choice != 3);
 
-        ;
-    for (int i = 0; i < count; i++)
-    {
-        free(user_array[i].username);
-        free(user_array[i].password);
-    }
-    for (int i = 0; i < ticket_count; i++)
-    {
-        free(ticket_array[i].id);
-        free(ticket_array[i].reason);
-        free(ticket_array[i].description);
-        free(ticket_array[i].category);
-        free(ticket_array[i].status);
-        free(ticket_array[i].time);
-    }
+    FreeTickets(ticket_array, ticket_count);
+    FreeUsers(user_array, count);
     return 0;
 }
