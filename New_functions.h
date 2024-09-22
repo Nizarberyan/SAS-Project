@@ -66,8 +66,12 @@ typedef struct
     Category category;
     Status status;
     time_t date;
+    time_t resolve_time;
+    time_t time;
+
     Priority priority;
     char client[CLIENT_SIZE];
+    Role client_role;
 } Ticket;
 
 void signup(User *users, int *user_count, char *username, char *password, Role role)
@@ -167,13 +171,14 @@ void login(User *users, int user_count, char *username, char *password, char *cu
 
     return;
 }
-void create_ticket(Ticket *tickets, int *ticket_count, char *current_user)
+void create_ticket(Ticket *tickets, int *ticket_count, char *current_user, Role client_role)
 {
     char reason[REASON_SIZE];
     char description[DESCRIPTION_SIZE];
     char client[CLIENT_SIZE];
     int category, priority, status;
     char client[25];
+    char client_role;
     time_t date;
     srand(time(NULL));
     int id = (rand() % 1000) + 1;
@@ -205,6 +210,16 @@ void create_ticket(Ticket *tickets, int *ticket_count, char *current_user)
         tickets_array[*ticket_count].priority = LOW;
     }
     strcpy(tickets_array[*ticket_count].client, current_user);
+    for (int i = 0; i < user_count; i++)
+    {
+        if (strcmp(tickets_array[*ticket_count].client, users_array[i].username) == 0)
+        {
+            tickets_array[*ticket_count].client_role = users_array[i].role;
+            break;
+        }
+    }
+
+    tickets_array[*ticket_count].time = time(NULL);
     time_t t = time(NULL);
     struct tm tm = *localtime(&t);
     strftime(tickets_array[*ticket_count].date, 100, "%d-%m-%Y %H:%M:%S", &tm);
@@ -347,20 +362,29 @@ void agent_panel(User *users, int user_count, Ticket *tickets, int ticket_count)
         break;
     }
 }
-void view_tickets(Ticket *tickets, int ticket_count)
+void view_tickets(Ticket *tickets, int ticket_count, char *current_user)
 {
     for (int i = 0; i < ticket_count; i++)
     {
-        printf("Ticket id: %d\n", tickets[i].id);
-        printf("Ticket %d: %s\n", i + 1, tickets[i].reason);
-        printf("Client: %s\n", tickets[i].client);
-        printf("Ticket %d: %s\n", i + 1, tickets[i].client);
-        printf("Priority: %s\n", tickets[i].priority == HIGH ? "High" : tickets[i].priority == MEDIUM ? "Medium"
-                                                                                                      : "Low");
-        printf("Category: %s\n", tickets[i].category);
-        printf("Status: %s\n", tickets[i].status);
-        printf("Date: %s\n", tickets[i].date);
-        printf("\n");
+        if (tickets[i].client == current_user)
+        {
+            printf("Ticket %d. %s\n", i + 1, tickets[i].reason);
+            printf("Description: %s\n", tickets[i].description);
+            printf("Category: %s\n", tickets[i].category == 1 ? "Defective product" : tickets[i].category == 2 ? "Customer service"
+                                                                                  : tickets[i].category == 3   ? "Billing"
+                                                                                                               : "Other");
+            printf("Status: %s\n", tickets[i].status == 1 ? "Pending" : tickets[i].status == 2 ? "In progress"
+                                                                    : tickets[i].status == 3   ? "Resolved"
+                                                                                               : "Closed");
+            printf("Priority: %s\n", tickets[i].priority == 1 ? "High" : tickets[i].priority == 2 ? "Medium"
+                                                                                                  : "Low");
+            printf("Client: %s\n", tickets[i].client);
+            printf("Date: %s\n", tickets[i].date);
+            printf("\n");
+        }
+        else if (tickets[i].client == current_user && tickets_array == AGENT)
+        {
+        }
     }
 }
 void view_users(User *users, int user_count)
@@ -392,7 +416,12 @@ void process_ticket(Ticket *tickets, int ticket_count)
     scanf("%d", &id);
     for (int i = 0; i < ticket_count; i++)
     {
-        if (tickets[i].id == id)
+        if (tickets[i].id != id)
+        {
+            printf("Ticket not found.\n");
+            return;
+        }
+        else if (tickets[i].id == id)
         {
             tickets[i].status = IN_PROGRESS;
             printf("Ticket description is: %s\n", tickets[i].description);
@@ -451,6 +480,12 @@ void process_ticket(Ticket *tickets, int ticket_count)
             printf("Ticket status is: %s\n", tickets[i].status);
             break;
         }
+        if (tickets[i].status == RESOLVED)
+        {
+            printf("Ticket resolved successfully.\n");
+            tickets_array[i].resolve_time = time(NULL);
+            break;
+        }
         break;
     }
 }
@@ -491,5 +526,38 @@ void view_stats(Ticket *tickets, int ticket_count)
     printf("Number of open tickets: %d\n", open_tickets);
     printf("Number of in progress tickets: %d\n", in_progress_tickets);
     printf("Number of resolved tickets: %d\n", resolved_tickets);
+    double avg_time = 0.0;
+    int resolved_tickets_count = 0;
+    for (int i = 0; i < ticket_count; i++)
+    {
+        if (tickets[i].status == RESOLVED)
+        {
+            avg_time += tickets[i].resolve_time - tickets[i].time;
+            resolved_tickets_count++;
+        }
+    }
+    if (resolved_tickets_count > 0)
+    {
+        avg_time /= resolved_tickets_count;
+    }
+    printf("Average time to resolve tickets: %.2f seconds\n", avg_time / 60.0);
+}
+
+void user_panel(User *users, int user_count, Ticket *tickets, int ticket_count, char *current_user, Role client_role)
+{
+    int choice;
+    printf("User panel:\n");
+    printf("1. Create ticket\n");
+    printf("2. View your tickets\n");
+    printf("4. Exit\n");
+    printf("Enter your choice: ");
+    scanf("%d", &choice);
+    switch (choice)
+    {
+    case 1:
+        create_ticket(tickets, ticket_count, current_user, client_role);
+        break;
+    case 2:
+    }
 }
 #endif

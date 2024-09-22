@@ -10,5 +10,6 @@ int main()
     strcpy(users_array[0].password, "Admin@123");
     users_array[0].role = ADMIN;
     char current_user[USERNAME_SIZE];
+
     return 0;
 }
