@@ -698,13 +698,28 @@ void user_delete_ticket(Ticket tickets[], int ticket_count)
     int ticket_id;
 
     printf("Enter the ID of the ticket you want to delete: ");
-    scanf("%d", &ticket_id);
-    getchar();
+
+    if (scanf("%d", &ticket_id) != 1)
+    {
+        printf("Invalid ticket ID.\n");
+        while (getchar() != '\n')
+        {
+        } // Clear input buffer
+        return;
+    }
 
     for (int i = 0; i < ticket_count; i++)
     {
         if (tickets[i].id == ticket_id)
         {
+            printf("Are you sure you want to delete ticket %d? (y/n): ", ticket_id);
+            char confirmation;
+            if (scanf(" %c", &confirmation) != 1 || (confirmation != 'y' && confirmation != 'Y'))
+            {
+                printf("Deletion canceled.\n");
+                return;
+            }
+
             for (int j = i; j < ticket_count - 1; j++)
             {
                 tickets[j] = tickets[j + 1];
@@ -714,6 +729,8 @@ void user_delete_ticket(Ticket tickets[], int ticket_count)
             return;
         }
     }
+
+    printf("Ticket with ID %d not found.\n", ticket_id);
 }
 void view_tickets(Ticket tickets[], int ticket_count, char *submitting_user)
 {
