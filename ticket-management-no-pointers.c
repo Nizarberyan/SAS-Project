@@ -582,6 +582,7 @@ void agent_panel(User users[], int user_count, Ticket tickets[], int ticket_coun
 void user_panel(User users[], int user_count, Ticket tickets[], int ticket_count, char logged_user[], Role client_role)
 {
     int choice;
+
     printf("User panel:\n");
     printf("1. Create ticket\n");
     printf("2. View your tickets\n");
@@ -589,7 +590,16 @@ void user_panel(User users[], int user_count, Ticket tickets[], int ticket_count
     printf("4. Delete your ticket\n");
     printf("5. Exit\n");
     printf("Enter your choice: ");
-    scanf("%d", &choice);
+
+    if (scanf("%d", &choice) != 1)
+    {
+        printf("Invalid choice. Please enter a number.\n");
+        while (getchar() != '\n')
+        {
+        } // Clear input buffer
+        return;
+    }
+
     switch (choice)
     {
     case 1:
@@ -606,22 +616,30 @@ void user_panel(User users[], int user_count, Ticket tickets[], int ticket_count
         break;
     case 5:
         exit(0);
+    default:
+        printf("Invalid choice.\n");
+        break;
     }
 }
-
 void user_edit_ticket(Ticket tickets[], int ticket_count)
 {
-
     if (ticket_count == 0)
     {
         printf("No tickets found.\n");
         return;
     }
 
-    printf("Enter the ID of the ticket you want to edit: ");
     int ticket_id;
-    scanf("%d", &ticket_id);
-    getchar();
+    printf("Enter the ID of the ticket you want to edit: ");
+
+    if (scanf("%d", &ticket_id) != 1)
+    {
+        printf("Invalid ticket ID.\n");
+        while (getchar() != '\n')
+        {
+        } // Clear input buffer
+        return;
+    }
 
     for (int i = 0; i < ticket_count; i++)
     {
@@ -629,32 +647,47 @@ void user_edit_ticket(Ticket tickets[], int ticket_count)
         {
             printf("Enter the new reason: ");
             fgets(tickets[i].reason, REASON_SIZE, stdin);
+            tickets[i].reason[strcspn(tickets[i].reason, "\n")] = '\0'; // Remove newline
+
             printf("Enter the new description: ");
             fgets(tickets[i].description, DESCRIPTION_SIZE, stdin);
+            tickets[i].description[strcspn(tickets[i].description, "\n")] = '\0'; // Remove newline
+
             printf("Enter the new category: ");
             printf("1. Defective product\n");
             printf("2. Customer service\n");
             printf("3. Billing\n");
             printf("4. Other\n");
-            int choice;
-            scanf("%d", &choice);
-            getchar();
-            if (choice == 1)
+
+            int category_choice;
+            if (scanf("%d", &category_choice) != 1)
             {
+                printf("Invalid category choice.\n");
+                while (getchar() != '\n')
+                {
+                } // Clear input buffer
+                return;
+            }
+
+            switch (category_choice)
+            {
+            case 1:
                 tickets[i].category = 0;
-            }
-            else if (choice == 2)
-            {
+                break;
+            case 2:
                 tickets[i].category = 1;
-            }
-            else if (choice == 3)
-            {
+                break;
+            case 3:
                 tickets[i].category = 2;
-            }
-            else
-            {
+                break;
+            case 4:
                 tickets[i].category = 3;
+                break;
+            default:
+                printf("Invalid category choice.\n");
+                return;
             }
+
             printf("Ticket edited successfully.\n");
             return;
         }

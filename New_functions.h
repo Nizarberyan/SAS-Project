@@ -66,11 +66,10 @@ typedef struct
     Category category;
     Status status;
     time_t date;
+    char submitting_user[USERNAME_SIZE];
     time_t resolve_time;
     time_t time;
-
     Priority priority;
-    char client[CLIENT_SIZE];
     Role client_role;
 } Ticket;
 
@@ -130,7 +129,7 @@ void signup(User *users, int *user_count, char *username, char *password, Role r
     }
 }
 
-void login(User *users, int user_count, char *username, char *password, char *current_user)
+void login(int user_count, User users_array[], char username, char password, char submitting_user)
 {
     char username[USERNAME_SIZE];
     char password[PASSWORD_SIZE];
@@ -166,12 +165,10 @@ void login(User *users, int user_count, char *username, char *password, char *cu
 
     if (i == user_count)
         printf("Invalid username or password.\n");
-
-    current_user = username;
-
+    submitting_user = users_array[i].username;
     return;
 }
-void create_ticket(Ticket *tickets, int *ticket_count, char *current_user, Role client_role)
+void create_ticket(Ticket *tickets, int *ticket_count, char *submitting_user, Role client_role)
 {
     char reason[REASON_SIZE];
     char description[DESCRIPTION_SIZE];
@@ -209,7 +206,7 @@ void create_ticket(Ticket *tickets, int *ticket_count, char *current_user, Role 
     {
         tickets_array[*ticket_count].priority = LOW;
     }
-    strcpy(tickets_array[*ticket_count].client, current_user);
+    strcpy(tickets_array[*ticket_count].client, submitting_user);
     for (int i = 0; i < user_count; i++)
     {
         if (strcmp(tickets_array[*ticket_count].client, users_array[i].username) == 0)
@@ -269,7 +266,7 @@ void manage_roles(User *users, int user_count)
         }
     }
 }
-void admin_panel(User *users, int user_count, Ticket *tickets, int ticket_count, char *current_user)
+void admin_panel(User *users, int user_count, Ticket *tickets, int ticket_count, char *submitting_user)
 {
     int choice;
     printf("Admin panel:\n");
@@ -285,10 +282,10 @@ void admin_panel(User *users, int user_count, Ticket *tickets, int ticket_count,
     switch (choice)
     {
     case 1:
-        create_ticket(tickets, ticket_count, current_user);
+        create_ticket(tickets, ticket_count, submitting_user, AGENT);
         break;
     case 2:
-        view_tickets(tickets, ticket_count);
+        view_tickets(tickets, ticket_count, submitting_user);
         printf("do you want to proccess the ticket?\n");
         printf("1. Yes\n");
         printf("2. No\n");
@@ -349,7 +346,7 @@ void agent_panel(User *users, int user_count, Ticket *tickets, int ticket_count)
         create_external_ticket(tickets, ticket_count);
         break;
     case 3:
-        view_tickets(tickets, ticket_count);
+        view_tickets(tickets, ticket_count, submitting_user);
         break;
     case 4:
         view_users(users, user_count);
@@ -362,11 +359,11 @@ void agent_panel(User *users, int user_count, Ticket *tickets, int ticket_count)
         break;
     }
 }
-void view_tickets(Ticket *tickets, int ticket_count, char *current_user)
+void view_tickets(Ticket *tickets, int ticket_count, char *submitting_user)
 {
     for (int i = 0; i < ticket_count; i++)
     {
-        if (tickets[i].client == current_user)
+        if (tickets[i].client == submitting_user)
         {
             printf("Ticket %d. %s\n", i + 1, tickets[i].reason);
             printf("Description: %s\n", tickets[i].description);
@@ -382,7 +379,7 @@ void view_tickets(Ticket *tickets, int ticket_count, char *current_user)
             printf("Date: %s\n", tickets[i].date);
             printf("\n");
         }
-        else if (tickets[i].client == current_user && tickets_array == AGENT)
+        else if (tickets[i].client == submitting_user && tickets_array == AGENT)
         {
         }
     }
@@ -543,7 +540,7 @@ void view_stats(Ticket *tickets, int ticket_count)
     printf("Average time to resolve tickets: %.2f seconds\n", avg_time / 60.0);
 }
 
-void user_panel(User *users, int user_count, Ticket *tickets, int ticket_count, char *current_user, Role client_role)
+void user_panel(User *users, int user_count, Ticket *tickets, int ticket_count, char *submitting_user, Role client_role)
 {
     int choice;
     printf("User panel:\n");
@@ -555,7 +552,7 @@ void user_panel(User *users, int user_count, Ticket *tickets, int ticket_count, 
     switch (choice)
     {
     case 1:
-        create_ticket(tickets, ticket_count, current_user, client_role);
+        create_ticket(tickets, ticket_count, submitting_user, client_role);
         break;
     case 2:
     }
